@@ -1,0 +1,46 @@
+#!/bin/bash
+
+read -r -a units
+
+if (( ${#units[@]} == 0 )); then
+	exit 1
+fi
+
+for u in "${units[@]}"; do
+	case "$u" in
+	*.service|*.socket|*.device|*.mount|*.automount|*.swap|*.target|*.path|*.timer|*.slice|*.scope)
+		;;
+	*)
+		exit 1
+		;;
+	esac
+done
+
+system_service_manager=0 user_service_manager=0
+
+systemctl status -- "${units[@]}" >&/dev/null
+if (( $? != 4 )); then
+	system_service_manager=1
+fi
+
+systemctl --user status -- "${units[@]}" >&/dev/null
+if (( $? != 4 )); then
+	user_service_manager=1
+fi
+
+systemctl=(systemctl)
+journalctl=(journalctl)
+if (( user_service_manager )); then
+	systemctl+=(--user)
+	journalctl+=(--user)
+fi
+
+if (( !system_service_manager && !user_service_manager )); then
+	exit 1
+fi
+
+cat <<-EOF
+	${systemctl[@]} restart -- ${units[@]@Q}
+	$(printf "${systemctl[*]} status -- %s\n" "${units[@]@Q}")
+	${journalctl[@]} --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+EOF

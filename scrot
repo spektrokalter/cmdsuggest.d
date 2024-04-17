@@ -1,0 +1,20 @@
+#!/bin/bash
+
+read -r str
+
+if [[ ! "$str" =~ ^/tmp/scrot ]]; then
+	exit 1
+fi
+
+if [[ ! -e /tmp/scrot ]]; then
+	printf 'mkdir /tmp/scrot\n'
+fi
+
+if [[ ! -e "$str" ]]; then
+	cat <<-EOF
+		sleep 5s
+		maim --hidecursor --select -- ${str@Q}
+		xclip -selection clipboard -target image/png -in <${str@Q}
+		rm -- ${str@Q}
+EOF
+fi

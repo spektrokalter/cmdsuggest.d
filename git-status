@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -o errexit -o nounset -o pipefail
+
+process_entry() {
+	local X="$1" Y="$2" file="$3"
+
+	# diff
+	#
+	if [[ "$X" =~ ^[MTAD]$ ]]; then
+		echo git diff --cached -- "${file@Q}"
+	fi
+	if [[ "$Y" =~ ^[MTAD]$ ]]; then
+		echo git diff -- "${file@Q}"
+	fi
+
+	# untracked file
+	#
+	if [[ "$X$Y" == '??' ]]; then
+		echo git add "${file@Q}"
+		echo rm "${file@Q}"
+		return
+	fi
+
+	# renamed file
+	#
+	if [[ "$X" == 'R' ]]; then
+		read -r src _ dst <<<"$file"
+		echo git mv "${dst@Q}" "${src@Q}"
+		return
+	fi
+
+	# untracked file but in the index
+	#
+	if [[ "$X$Y" == ' A' ]]; then
+		echo git add "${file@Q}"
+		echo git reset HEAD "${file@Q}"
+		return
+	fi
+
+	# move back and forth to the index
+	#
+	if [[ "$X" =~ ^[MTAD]$ ]]; then
+		echo git reset HEAD "${file@Q}"
+	fi
+	if [[ "$Y" =~ ^[MTAD]$ ]]; then
+		echo git add "${file@Q}"
+		echo git checkout "${file@Q}"
+	fi
+}
+
+if [[ ! -e "$PWD/.git" ]]; then
+	exit 1
+fi
+
+IFS= read -r str
+
+if ! git status | grep -q --line-regexp --fixed-strings -- "$str"; then
+	exit 1
+fi
+
+process_entry "${str:0:1}" "${str:1:1}" "${str:3}"

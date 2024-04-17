@@ -1,0 +1,9 @@
+#!/bin/bash
+
+read -r str
+
+if [[ -e "$HOME/.password-store/${str}.gpg" ]]; then
+	cat <<-EOF
+		pass ${str@Q}
+EOF
+fi

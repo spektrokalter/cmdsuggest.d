@@ -1,0 +1,17 @@
+#!/bin/bash
+
+read -r url
+
+if ! trurl --verify --url "$url" >/dev/null 2>&1; then
+	exit 1
+fi
+
+host="$(trurl --get '{host}' --url "$url")"
+
+case "$host" in
+*.youtube.com|youtube.com|youtu.be)
+	cat <<-EOF
+		mpv --no-video ${url@Q}
+EOF
+	;;
+esac

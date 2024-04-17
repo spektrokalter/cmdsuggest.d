@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Exclude packages not prefix with "aur/" to let another plumber (pacman)
+# examine them, and have both aur and non-aur packages listed on the
+# same line.
+
+read -r -a pkgs
+
+aur_pkgs=()
+for p in "${pkgs[@]}"; do
+	if [[ "$p" =~ ^aur/ ]]; then
+		aur_pkgs+=("${p#"${BASH_REMATCH[0]}"}")
+	fi
+done
+
+if (( ${#aur_pkgs[@]} == 0 )); then
+	exit 1
+fi
+
+if pacman -Q -- "${aur_pkgs[@]}" >/dev/null 2>&1; then
+	cat <<-EOF
+		pacman -Rs ${aur_pkgs[@]@Q}
+EOF
+else
+	cat <<-EOF
+		yay -S ${aur_pkgs[@]@Q}
+EOF
+fi

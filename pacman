@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# `pacman -Sp` is slow. For this reason, limit the scope of this plumber.
+
+# Exclude packages prefixed with "aur/" to let another plumber (aur) examine
+# them, and have both non-aur and aur packages listed on the same line.
+
+if [[ -z "${CMDSUGGEST_PACMAN:+x}" ]]; then
+	exit 1
+fi
+
+read -r -a pkgs
+
+noaur_pkgs=()
+for p in "${pkgs[@]}"; do
+	if ! [[ "$p" =~ ^aur/ ]]; then
+		noaur_pkgs+=("$p")
+	fi
+done
+
+pkgs=("${noaur_pkgs[@]}")
+
+if (( ${#pkgs[@]} == 0 )); then
+	exit 1
+fi
+
+if pacman -Q -- "${pkgs[@]}" >/dev/null 2>&1; then
+	cat <<-EOF
+		pacman -Rs ${pkgs[@]@Q}
+EOF
+elif pacman -Sp -- "${pkgs[@]}" >/dev/null 2>&1; then
+	cat <<-EOF
+		pacman -S ${pkgs[@]@Q}
+EOF
+fi

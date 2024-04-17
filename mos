@@ -1,0 +1,9 @@
+#!/bin/bash
+
+read -r conf
+
+if [[ "$conf" && -e "$HOME/.mariadb-over-ssh.d/$conf" ]]; then
+	cat <<-EOF
+		mos ${conf@Q}
+EOF
+fi

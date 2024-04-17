@@ -1,0 +1,16 @@
+#!/bin/bash
+
+read -r str
+
+if machinectl show -- "$str" >/dev/null 2>&1; then
+	cat <<-EOF
+		machinectl status -- ${str@Q}
+		machinectl reboot -- ${str@Q}
+		machinectl poweroff -- ${str@Q}
+		machinectl shell -- ${str@Q} /bin/sh
+EOF
+elif machinectl show-image -- "$str" >/dev/null 2>&1; then
+	cat <<-EOF
+		machinectl start -- ${str@Q}
+EOF
+fi

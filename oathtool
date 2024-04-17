@@ -1,0 +1,15 @@
+#!/bin/bash
+
+read -r str
+
+xstr="$(tr -d '[:space:]' <<<"$str")"
+
+[[
+	"$xstr" =~ ^[a-zA-Z0-9]{16}$ ||
+	"$xstr" =~ ^[a-zA-Z0-9]{26}$ ||
+	"$xstr" =~ ^[a-zA-Z0-9]{32}$
+]] \
+&& oathtool -b --totp "$str" >&/dev/null \
+&& cat <<-EOF
+		oathtool -b --totp ${str@Q}
+EOF
