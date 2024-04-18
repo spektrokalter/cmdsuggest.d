@@ -18,12 +18,12 @@ done
 
 system_service_manager=0 user_service_manager=0
 
-systemctl status -- "${units[@]}" >&/dev/null
+systemctl status -- "${units[@]}" >/dev/null 2>&1
 if (( $? != 4 )); then
 	system_service_manager=1
 fi
 
-systemctl --user status -- "${units[@]}" >&/dev/null
+systemctl --user status -- "${units[@]}" >/dev/null 2>&1
 if (( $? != 4 )); then
 	user_service_manager=1
 fi
