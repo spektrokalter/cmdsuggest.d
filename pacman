@@ -5,7 +5,7 @@
 # Exclude packages prefixed with "aur/" to let another plumber (aur) examine
 # them, and have both non-aur and aur packages listed on the same line.
 
-if [[ -z "${CMDSUGGEST_PACMAN:+x}" ]]; then
+if [[ ! "${CMDSUGGEST_PACMAN:+x}" ]]; then
 	exit 1
 fi
 
