@@ -12,7 +12,7 @@ if ! [[
 	exit 1
 fi
 
-if ! oathtool -b --totp "$str" >&/dev/null; then
+if ! oathtool -b --totp "$str" >/dev/null 2>&1; then
 	exit 1
 fi
 
