@@ -59,7 +59,7 @@ fi
 
 IFS= read -r str
 
-if ! git status | grep -q --line-regexp --fixed-strings -- "$str"; then
+if ! git status --short | grep -q --line-regexp --fixed-strings -- "$str"; then
 	exit 1
 fi
 
