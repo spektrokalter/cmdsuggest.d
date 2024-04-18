@@ -4,12 +4,18 @@ read -r str
 
 xstr="$(tr -d '[:space:]' <<<"$str")"
 
-[[
+if ! [[
 	"$xstr" =~ ^[a-zA-Z0-9]{16}$ ||
 	"$xstr" =~ ^[a-zA-Z0-9]{26}$ ||
 	"$xstr" =~ ^[a-zA-Z0-9]{32}$
-]] \
-&& oathtool -b --totp "$str" >&/dev/null \
-&& cat <<-EOF
-		oathtool -b --totp ${str@Q}
+]]; then
+	exit 1
+fi
+
+if ! oathtool -b --totp "$str" >&/dev/null; then
+	exit 1
+fi
+
+cat <<-EOF
+	oathtool -b --totp ${str@Q}
 EOF
