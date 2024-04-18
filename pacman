@@ -9,16 +9,14 @@ if [[ -z "${CMDSUGGEST_PACMAN:+x}" ]]; then
 	exit 1
 fi
 
-read -r -a pkgs
+read -r -a all_pkgs
 
-noaur_pkgs=()
-for p in "${pkgs[@]}"; do
-	if ! [[ "$p" =~ ^aur/ ]]; then
-		noaur_pkgs+=("$p")
+pkgs=()
+for p in "${all_pkgs[@]}"; do
+	if [[ ! "$p" =~ ^aur/ ]]; then
+		pkgs+=("$p")
 	fi
 done
-
-pkgs=("${noaur_pkgs[@]}")
 
 if (( ${#pkgs[@]} == 0 )); then
 	exit 1
