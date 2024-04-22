@@ -1,9 +1,11 @@
 #!/bin/bash
 
-read -r conf
+read -r config_name
 
-if [[ -f "$HOME/.mos.sh.d/$conf" ]]; then
+config_file="$HOME/.mos.sh.d/$config_name"
+
+if [[ -f "$config_file" ]]; then
 	cat <<-EOF
-		mos ${conf@Q}
+		mos ${config_name@Q}
 EOF
 fi
