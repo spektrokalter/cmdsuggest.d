@@ -2,7 +2,7 @@
 
 read -r conf
 
-if [[ -f "$HOME/.mariadb-over-ssh.d/$conf" ]]; then
+if [[ -f "$HOME/.mos.sh.d/$conf" ]]; then
 	cat <<-EOF
 		mos ${conf@Q}
 EOF
