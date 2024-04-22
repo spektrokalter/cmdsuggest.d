@@ -5,7 +5,16 @@ read -r config_name
 config_file="$HOME/.mos.sh.d/$config_name"
 
 if [[ -f "$config_file" ]]; then
+
+	# resolve symlinks and normalize the path
+	#
+	resolved="$(realpath -- "$config_file")"
+
+	systemd_unit="ssh-L@$(systemd-escape --path -- "$resolved").service"
+
 	cat <<-EOF
 		mos ${config_name@Q}
+		${resolved@Q}
+		$systemd_unit
 EOF
 fi
