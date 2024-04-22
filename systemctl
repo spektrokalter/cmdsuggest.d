@@ -28,15 +28,15 @@ if (( $? != 4 )); then
 	user_service_manager=1
 fi
 
+if (( !system_service_manager && !user_service_manager )); then
+	exit 1
+fi
+
 systemctl=(systemctl)
 journalctl=(journalctl)
 if (( user_service_manager )); then
 	systemctl+=(--user)
 	journalctl+=(--user)
-fi
-
-if (( !system_service_manager && !user_service_manager )); then
-	exit 1
 fi
 
 cat <<-EOF
