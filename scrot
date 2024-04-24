@@ -7,7 +7,7 @@ if [[ ! "$str" =~ ^/tmp/scrot ]]; then
 fi
 
 if [[ ! -e /tmp/scrot ]]; then
-	printf 'mkdir /tmp/scrot\n'
+	echo mkdir /tmp/scrot
 fi
 
 if [[ ! -e "$str" ]]; then
