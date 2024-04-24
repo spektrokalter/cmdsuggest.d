@@ -53,7 +53,7 @@ process_entry() {
 }
 
 wt="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
-if [[ $? != 0 || "$wt" != 'true' ]]; then
+if [[ "$wt" != 'true' ]]; then
 	exit 1
 fi
 
