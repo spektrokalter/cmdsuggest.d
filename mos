@@ -16,5 +16,5 @@ if [[ -f "$config_file" ]]; then
 		mos ${config_name@Q}
 		${resolved@Q}
 		$systemd_unit
-EOF
+	EOF
 fi

@@ -8,10 +8,10 @@ if machinectl show -- "$str" >/dev/null 2>&1; then
 		machinectl reboot -- ${str@Q}
 		machinectl poweroff -- ${str@Q}
 		machinectl shell -- ${str@Q} /bin/sh
-EOF
+	EOF
 elif machinectl show-image -- "$str" >/dev/null 2>&1; then
 	cat <<-EOF
 		machinectl start -- ${str@Q}
 		machinectl remove -- ${str@Q}
-EOF
+	EOF
 fi

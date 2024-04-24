@@ -25,9 +25,9 @@ fi
 if pacman -Q -- "${pkgs[@]}" >/dev/null 2>&1; then
 	cat <<-EOF
 		pacman -Rs ${pkgs[@]@Q}
-EOF
+	EOF
 elif pacman -Sp -- "${pkgs[@]}" >/dev/null 2>&1; then
 	cat <<-EOF
 		pacman -S ${pkgs[@]@Q}
-EOF
+	EOF
 fi

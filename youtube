@@ -12,6 +12,6 @@ case "$host" in
 *.youtube.com|youtube.com|youtu.be)
 	cat <<-EOF
 		mpv --no-video ${url@Q}
-EOF
+	EOF
 	;;
 esac

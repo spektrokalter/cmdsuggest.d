@@ -16,5 +16,5 @@ if [[ ! -e "$str" ]]; then
 		maim --hidecursor --select -- ${str@Q}
 		xclip -selection clipboard -target image/png -in <${str@Q}
 		rm -- ${str@Q}
-EOF
+	EOF
 fi

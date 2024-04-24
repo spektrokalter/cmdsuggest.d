@@ -20,9 +20,9 @@ fi
 if pacman -Q -- "${aur_pkgs[@]}" >/dev/null 2>&1; then
 	cat <<-EOF
 		pacman -Rs ${aur_pkgs[@]@Q}
-EOF
+	EOF
 else
 	cat <<-EOF
 		yay -S ${aur_pkgs[@]@Q}
-EOF
+	EOF
 fi
