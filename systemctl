@@ -54,6 +54,16 @@ if (( ${#units[@]} == 0 )); then
 	exit 1
 fi
 
+for u in "${units[@]}"; do
+	case "$u" in
+	*.service|*.socket|*.device|*.mount|*.automount|*.swap|*.target|*.path|*.timer|*.slice|*.scope)
+		;;
+	*)
+		exit 1
+		;;
+	esac
+done
+
 system_service_manager=0 user_service_manager=0
 
 if are_all_system_units "${units[@]}"; then
