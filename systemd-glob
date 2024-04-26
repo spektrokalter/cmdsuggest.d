@@ -22,17 +22,15 @@ list_user_unit_files() {
 
 read -r unit
 
-(
-	if [[ "$(list_system_units "$unit" | head -1)" != "$unit" ]]; then
-		list_system_units "$unit"
+list_funcs=(
+	list_system_units
+	list_system_unit_files
+	list_user_units
+	list_user_unit_files
+)
+
+for f in "${list_funcs[@]}"; do
+	if [[ "$("$f" "$unit" | head -1)" != "$unit" ]]; then
+		"$f" "$unit"
 	fi
-	if [[ "$(list_system_unit_files "$unit" | head -1)" != "$unit" ]]; then
-		list_system_unit_files "$unit"
-	fi
-	if [[ "$(list_user_units "$unit" | head -1)" != "$unit" ]]; then
-		list_user_units "$unit"
-	fi
-	if [[ "$(list_user_unit_files "$unit" | head -1)" != "$unit" ]]; then
-		list_user_unit_files "$unit"
-	fi
-) | sort | uniq
+done | sort --unique
