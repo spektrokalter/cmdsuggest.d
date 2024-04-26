@@ -1,0 +1,38 @@
+#!/bin/bash
+
+list_system_units() {
+	systemctl -o json --all list-units -- "$1" \
+	| jq --raw-output '.[].unit'
+}
+
+list_system_unit_files() {
+	systemctl -o json list-unit-files -- "$1" \
+	| jq --raw-output '.[].unit_file'
+}
+
+list_user_units() {
+	systemctl -o json --all --user list-units -- "$1" \
+	| jq --raw-output '.[].unit'
+}
+
+list_user_unit_files() {
+	systemctl -o json --user list-unit-files -- "$1" \
+	| jq --raw-output '.[].unit_file'
+}
+
+read -r unit
+
+(
+	if [[ "$(list_system_units "$unit" | head -1)" != "$unit" ]]; then
+		list_system_units "$unit"
+	fi
+	if [[ "$(list_system_unit_files "$unit" | head -1)" != "$unit" ]]; then
+		list_system_unit_files "$unit"
+	fi
+	if [[ "$(list_user_units "$unit" | head -1)" != "$unit" ]]; then
+		list_user_units "$unit"
+	fi
+	if [[ "$(list_user_unit_files "$unit" | head -1)" != "$unit" ]]; then
+		list_user_unit_files "$unit"
+	fi
+) | sort | uniq
