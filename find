@@ -1,0 +1,26 @@
+#!/bin/bash
+
+IFS= read -r str
+read -r xstr <<<"$str"
+
+if [[ ! -d "$xstr" ]]; then
+	exit 1
+fi
+
+indentation="  ${str%%[^[:blank:]]*}"
+
+dirs="$(mktemp)"
+find "$xstr" -mindepth 1 -maxdepth 1 -type d -printf "${indentation}%p/\n" | sort >"$dirs"
+
+nondirs="$(mktemp)"
+find "$xstr" -maxdepth 1 -not -type d -printf "${indentation}%p\n" | sort >"$nondirs"
+
+cat -- "$dirs"
+
+if (( $(wc -l <"$dirs") > 0 && $(wc -l <"$nondirs") > 0 )); then
+	printf '\n'
+fi
+
+cat -- "$nondirs"
+
+rm -- "$dirs" "$nondirs"
