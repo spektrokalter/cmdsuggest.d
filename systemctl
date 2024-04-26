@@ -70,7 +70,7 @@ fi
 
 systemctl=(systemctl)
 journalctl=(journalctl)
-if (( user_service_manager )); then
+if (( user_service_manager && !system_service_manager )); then
 	systemctl+=(--user)
 	journalctl+=(--user)
 fi
