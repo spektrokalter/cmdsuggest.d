@@ -1,28 +1,66 @@
 #!/bin/bash
 
+unit_found() {
+	[[ "$(jq --arg 'unit' "$1" '.[0].unit == $unit')" == 'true' ]]
+}
+
+unit_file_found() {
+	[[ "$(jq --arg 'unit_file' "$1" '.[0].unit_file == $unit_file')" == 'true' ]]
+}
+
+is_system_unit() {
+	systemctl -o json --all list-units -- "$1" \
+	| unit_found "$1"
+}
+
+is_system_unit_file() {
+	systemctl -o json list-unit-files -- "$1" \
+	| unit_file_found "$1"
+}
+
+is_user_unit() {
+	systemctl -o json --all --user list-units -- "$1" \
+	| unit_found "$1"
+}
+
+is_user_unit_file() {
+	systemctl -o json --user list-unit-files -- "$1" \
+	| unit_file_found "$1"
+}
+
+are_all_system_units() {
+	local u
+	for u; do
+		if ! is_system_unit "$u" && ! is_system_unit_file "$u"; then
+			return 1
+		fi
+	done
+	return 0
+}
+
+are_all_user_units() {
+	local u
+	for u; do
+		if ! is_user_unit "$u" && ! is_user_unit_file "$u"; then
+			return 1
+		fi
+	done
+	return 0
+}
+
 read -r -a units
 
 if (( ${#units[@]} == 0 )); then
 	exit 1
 fi
 
-for u in "${units[@]}"; do
-	case "$u" in
-	*.service|*.socket|*.device|*.mount|*.automount|*.swap|*.target|*.path|*.timer|*.slice|*.scope)
-		;;
-	*)
-		exit 1
-		;;
-	esac
-done
-
 system_service_manager=0 user_service_manager=0
 
-if systemctl status -- "${units[@]}" >/dev/null 2>&1; (( $? != 4 )); then
+if are_all_system_units "${units[@]}"; then
 	system_service_manager=1
 fi
 
-if systemctl --user status -- "${units[@]}" >/dev/null 2>&1; (( $? != 4 )); then
+if are_all_user_units "${units[@]}"; then
 	user_service_manager=1
 fi
 
