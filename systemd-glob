@@ -30,8 +30,6 @@ list_funcs=(
 	list_system_unit_files
 	list_user_units
 	list_user_unit_files
-
-	list_machines
 )
 
 read -r str
@@ -40,4 +38,11 @@ for f in "${list_funcs[@]}"; do
 	if [[ "$("$f" "$str" | head -1)" != "$str" ]]; then
 		"$f" "$str"
 	fi
-done | sort --unique
+done \
+| sed 's/^.*\(\.[a-z^.]*\)$/\1 &/' \
+| sort --unique \
+| sed 's/^[^ ]* //'
+
+if [[ "$(list_machines "$str" | head -1)" != "$str" ]]; then
+	list_machines "$str"
+fi
