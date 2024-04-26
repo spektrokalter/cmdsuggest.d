@@ -7,7 +7,7 @@ if [[ ! -d "$xstr" ]]; then
 	exit 1
 fi
 
-indentation="  ${str%%[^[:blank:]]*}"
+indentation="${str%%[^[:blank:]]*}  "
 
 dirs="$(mktemp)"
 find -H "$xstr" -mindepth 1 -maxdepth 1 -type d -printf "${indentation}%p/\n" | sort >"$dirs"
