@@ -6,18 +6,18 @@ if [[ ! "$str" =~ ^/tmp/scrot/. ]]; then
 	exit 1
 fi
 
-str="$XDG_RUNTIME_DIR${str#/tmp}"
+image="$XDG_RUNTIME_DIR${str#/tmp}"
 
-if dir="${str%/*}"; [[ ! -e "$dir" ]]; then
+if dir="${image%/*}"; [[ ! -e "$dir" ]]; then
 	echo mkdir -p "${dir@Q}"
 fi
 
-if [[ ! -e "$str" ]]; then
+if [[ ! -e "$image" ]]; then
 	cat <<-EOF
 		sleep 5s
-		maim --hidecursor --select -- ${str@Q}
+		maim --hidecursor --select -- ${image@Q}
 
-		xclip -selection clipboard -target image/png -in <${str@Q}
-		rm -- ${str@Q}
+		xclip -selection clipboard -target image/png -in <${image@Q}
+		rm -- ${image@Q}
 	EOF
 fi
