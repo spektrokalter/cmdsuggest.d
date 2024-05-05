@@ -1,0 +1,26 @@
+#!/bin/bash
+
+extract_scheme() {
+	trurl --no-guess-scheme --verify --get '{scheme}' -- "$1" 2>/dev/null
+}
+
+extract_port() {
+	trurl --verify --get '{default:port}' -- "$1" 2>/dev/null
+}
+
+read -r url
+
+if ! s="$(extract_scheme "$url")"; then
+	exit 1
+fi
+
+if ! p="$(extract_port "$url")"; then
+	exit 1
+fi
+
+if [[
+	"$s" == 'http' && "$p" == '80' ||
+	"$s" == 'https' && "$p" == '443'
+]]; then
+	echo xdg-open "${url@Q}"
+fi
