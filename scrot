@@ -6,8 +6,8 @@ if [[ ! "$str" =~ ^/tmp/scrot ]]; then
 	exit 1
 fi
 
-if [[ ! -e /tmp/scrot ]]; then
-	echo mkdir /tmp/scrot
+if [[ ! -e "${str%/*}" ]]; then
+	echo mkdir -p "${str%/*}"
 fi
 
 if [[ ! -e "$str" ]]; then
