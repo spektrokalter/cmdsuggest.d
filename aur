@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Exclude packages not prefix with "aur/" to let another plumber (pacman)
+# Exclude packages not prefix with "aur/" to let another script (pacman)
 # examine them, and have both aur and non-aur packages listed on the
 # same line.
 
