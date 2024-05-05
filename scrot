@@ -8,16 +8,18 @@ fi
 
 image="$XDG_RUNTIME_DIR${str#/tmp}"
 
+if [[ -e "$image" ]]; then
+	exit 1
+fi
+
 if dir="${image%/*}"; [[ ! -e "$dir" ]]; then
 	echo mkdir -p "${dir@Q}"
 fi
 
-if [[ ! -e "$image" ]]; then
-	cat <<-EOF
-		sleep 5s
-		maim --hidecursor --select -- ${image@Q}
+cat <<-EOF
+	sleep 5s
+	maim --hidecursor --select -- ${image@Q}
 
-		xclip -selection clipboard -target image/png -in <${image@Q}
-		rm -- ${image@Q}
-	EOF
-fi
+	xclip -selection clipboard -target image/png -in <${image@Q}
+	rm -- ${image@Q}
+EOF
