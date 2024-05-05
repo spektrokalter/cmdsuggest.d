@@ -6,6 +6,8 @@ if [[ ! "$str" =~ ^/tmp/scrot/. ]]; then
 	exit 1
 fi
 
+str="$XDG_RUNTIME_DIR${str#/tmp}"
+
 if dir="${str%/*}"; [[ ! -e "$dir" ]]; then
 	echo mkdir -p "$dir"
 fi
