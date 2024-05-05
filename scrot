@@ -13,7 +13,7 @@ if [[ -e "$image" ]]; then
 fi
 
 if dir="${image%/*}"; [[ ! -e "$dir" ]]; then
-	echo mkdir -p "${dir@Q}"
+	echo mkdir -p -- "${dir@Q}"
 fi
 
 cat <<-EOF
