@@ -9,7 +9,7 @@ fi
 str="$XDG_RUNTIME_DIR${str#/tmp}"
 
 if dir="${str%/*}"; [[ ! -e "$dir" ]]; then
-	echo mkdir -p "$dir"
+	echo mkdir -p "${dir@Q}"
 fi
 
 if [[ ! -e "$str" ]]; then
