@@ -2,7 +2,7 @@
 
 read -r str
 
-if [[ ! "$str" =~ ^/tmp/scrot ]]; then
+if [[ ! "$str" =~ ^/tmp/scrot/. ]]; then
 	exit 1
 fi
 
