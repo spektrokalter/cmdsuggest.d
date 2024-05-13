@@ -20,15 +20,18 @@ if (( !system_service_manager && !user_service_manager )); then
 	exit 1
 fi
 
-systemctl=(systemctl)
-journalctl=(journalctl)
-if (( user_service_manager && !system_service_manager )); then
-	systemctl+=(--user)
-	journalctl+=(--user)
+if (( system_service_manager )); then
+	cat <<-EOF
+		systemctl restart -- ${units[@]@Q}
+		$(printf "systemctl status -- %s\n" "${units[@]@Q}")
+		journalctl --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+	EOF
 fi
 
-cat <<-EOF
-	${systemctl[@]} restart -- ${units[@]@Q}
-	$(printf "${systemctl[*]} status -- %s\n" "${units[@]@Q}")
-	${journalctl[@]} --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
-EOF
+if (( user_service_manager )); then
+	cat <<-EOF
+		systemctl --user restart -- ${units[@]@Q}
+		$(printf "systemctl --user status -- %s\n" "${units[@]@Q}")
+		journalctl --user --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+	EOF
+fi
