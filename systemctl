@@ -17,17 +17,23 @@ if systemd-analyze --user verify -- "${units[@]}" >/dev/null 2>&1; then
 fi
 
 if (( system_service_manager )); then
-	cat <<-EOF
-		systemctl restart -- ${units[@]@Q}
-		$(printf "systemctl status -- %s\n" "${units[@]@Q}")
-		journalctl --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
-	EOF
+	echo systemctl restart -- ${units[@]@Q}
+	if (( ${#units[@]} > 1 )); then
+		printf "systemctl status -- %s\n" "${units[@]@Q}"
+	fi
+	echo journalctl --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+	if (( ${#units[@]} > 1 )); then
+		printf "journalctl --follow --unit=%s\n" "${units[@]@Q}"
+	fi
 fi
 
 if (( user_service_manager )); then
-	cat <<-EOF
-		systemctl --user restart -- ${units[@]@Q}
-		$(printf "systemctl --user status -- %s\n" "${units[@]@Q}")
-		journalctl --user --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
-	EOF
+	echo systemctl --user restart -- ${units[@]@Q}
+	if (( ${#units[@]} > 1 )); then
+		printf "systemctl --user status -- %s\n" "${units[@]@Q}"
+	fi
+	echo journalctl --user --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+	if (( ${#units[@]} > 1 )); then
+		printf "journalctl --user --follow --unit=%s\n" "${units[@]@Q}"
+	fi
 fi
