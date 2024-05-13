@@ -11,7 +11,12 @@ print_suggestions() {
 
 	local u
 	for u in "${units[@]}"; do
-		printf '%s restart -- %s\n' "$systemctl" "${u@Q}"
+		cat <<-EOF
+			$systemctl status -- ${u@Q}
+			$systemctl restart -- ${u@Q}
+			$systemctl stop -- ${u@Q}
+			$systemctl --full edit -- ${u@Q}
+		EOF
 	done
 
 	printf '%s --follow %s\n' "$journalctl" "$(printf -- '--unit=%s ' "${units[@]@Q}")"
