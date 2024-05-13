@@ -21,16 +21,9 @@ print_suggestions() {
 			$systemctl restart -- ${u@Q}
 			$systemctl stop -- ${u@Q}
 			$systemctl --full edit -- ${u@Q}
+			$journalctl --follow --unit=${u@Q}
 		EOF
 	done
-
-	if (( ${#units[@]} > 1 )); then
-		local u
-		for u in "${units[@]}"; do
-			printf '%s --follow --unit=%s\n' "$journalctl" "${u@Q}"
-		done
-	fi
-
 }
 
 read -r -a units
