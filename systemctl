@@ -16,10 +16,6 @@ if systemd-analyze --user verify -- "${units[@]}" >/dev/null 2>&1; then
 	user_service_manager=1
 fi
 
-if (( !system_service_manager && !user_service_manager )); then
-	exit 1
-fi
-
 if (( system_service_manager )); then
 	cat <<-EOF
 		systemctl restart -- ${units[@]@Q}
