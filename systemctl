@@ -33,20 +33,10 @@ if (( ${#units[@]} == 0 )); then
 	exit 1
 fi
 
-system_service_manager=0 user_service_manager=0
-
 if systemd-analyze verify -- "${units[@]}" >/dev/null 2>&1; then
-	system_service_manager=1
-fi
-
-if systemd-analyze --user verify -- "${units[@]}" >/dev/null 2>&1; then
-	user_service_manager=1
-fi
-
-if (( system_service_manager )); then
 	print_suggestions 'systemctl' 'journalctl' "${units[@]}"
 fi
 
-if (( user_service_manager )); then
+if systemd-analyze --user verify -- "${units[@]}" >/dev/null 2>&1; then
 	print_suggestions 'systemctl --user' 'journalctl --user' "${units[@]}"
 fi
