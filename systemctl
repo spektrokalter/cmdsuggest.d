@@ -9,12 +9,10 @@ print_suggestions() {
 
 	printf '%s restart -- %s\n' "$systemctl" "${units[*]@Q}"
 
-	if (( ${#units[@]} > 1 )); then
-		local u
-		for u in "${units[@]}"; do
-			printf '%s restart -- %s\n' "$systemctl" "${u@Q}"
-		done
-	fi
+	local u
+	for u in "${units[@]}"; do
+		printf '%s restart -- %s\n' "$systemctl" "${u@Q}"
+	done
 
 	printf '%s --follow %s\n' "$journalctl" "$(printf -- '--unit=%s ' "${units[@]@Q}")"
 
