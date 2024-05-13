@@ -1,5 +1,32 @@
 #!/bin/bash
 
+# assume $1 and $2 are already escaped
+#
+print_suggestions() {
+	local systemctl="$1" journalctl="$2"
+	shift 2
+	local units=("$@")
+
+	printf '%s restart -- %s\n' "$systemctl" "${units[*]@Q}"
+
+	if (( ${#units[@]} > 1 )); then
+		local u
+		for u in "${units[@]}"; do
+			printf '%s restart -- %s\n' "$systemctl" "${u@Q}"
+		done
+	fi
+
+	printf '%s --follow %s\n' "$journalctl" "$(printf -- '--unit=%s ' "${units[@]@Q}")"
+
+	if (( ${#units[@]} > 1 )); then
+		local u
+		for u in "${units[@]}"; do
+			printf '%s --follow --unit=%s\n' "$journalctl" "${u@Q}"
+		done
+	fi
+
+}
+
 read -r -a units
 
 if (( ${#units[@]} == 0 )); then
@@ -17,23 +44,9 @@ if systemd-analyze --user verify -- "${units[@]}" >/dev/null 2>&1; then
 fi
 
 if (( system_service_manager )); then
-	echo systemctl restart -- ${units[@]@Q}
-	if (( ${#units[@]} > 1 )); then
-		printf "systemctl status -- %s\n" "${units[@]@Q}"
-	fi
-	echo journalctl --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
-	if (( ${#units[@]} > 1 )); then
-		printf "journalctl --follow --unit=%s\n" "${units[@]@Q}"
-	fi
+	print_suggestions 'systemctl' 'journalctl' "${units[@]}"
 fi
 
 if (( user_service_manager )); then
-	echo systemctl --user restart -- ${units[@]@Q}
-	if (( ${#units[@]} > 1 )); then
-		printf "systemctl --user status -- %s\n" "${units[@]@Q}"
-	fi
-	echo journalctl --user --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
-	if (( ${#units[@]} > 1 )); then
-		printf "journalctl --user --follow --unit=%s\n" "${units[@]@Q}"
-	fi
+	print_suggestions 'systemctl --user' 'journalctl --user' "${units[@]}"
 fi
