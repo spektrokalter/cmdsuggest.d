@@ -7,7 +7,12 @@ print_suggestions() {
 	shift 2
 	local units=("$@")
 
-	printf '%s restart -- %s\n' "$systemctl" "${units[*]@Q}"
+	if (( ${#units[@]} > 1 )); then
+		cat <<-EOF
+			$systemctl restart -- ${units[*]@Q}
+			$journalctl --follow $(printf -- '--unit=%s ' "${units[@]@Q}")
+		EOF
+	fi
 
 	local u
 	for u in "${units[@]}"; do
@@ -18,8 +23,6 @@ print_suggestions() {
 			$systemctl --full edit -- ${u@Q}
 		EOF
 	done
-
-	printf '%s --follow %s\n' "$journalctl" "$(printf -- '--unit=%s ' "${units[@]@Q}")"
 
 	if (( ${#units[@]} > 1 )); then
 		local u
