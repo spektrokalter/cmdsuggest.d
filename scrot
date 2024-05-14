@@ -22,4 +22,5 @@ cat <<-EOF
 
 	xclip -selection clipboard -target image/png -in <${image@Q}
 	rm -- ${image@Q}
+
 EOF
