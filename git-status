@@ -8,20 +8,20 @@ process_entry() {
 	# diff
 	#
 	if [[ "$X" =~ ^[MTAD]$ ]]; then
-		echo git diff --cached -- "${file@Q}"
+		echo git diff --cached -- "$file"
 	fi
 	if [[ "$Y" =~ ^[MTAD]$ ]]; then
-		echo git diff -- "${file@Q}"
+		echo git diff -- "$file"
 	fi
 	if [[ "$X$Y" == '??' ]]; then
-		echo less -- "${file@Q}"
+		echo less -- "$file"
 	fi
 
 	# untracked file
 	#
 	if [[ "$X$Y" == '??' ]]; then
-		echo git add "${file@Q}"
-		echo rm "${file@Q}"
+		echo git add "$file"
+		echo rm "$file"
 		return
 	fi
 
@@ -29,26 +29,26 @@ process_entry() {
 	#
 	if [[ "$X" == 'R' ]]; then
 		read -r src _ dst <<<"$file"
-		echo git mv "${dst@Q}" "${src@Q}"
+		echo git mv "$dst" "$src"
 		return
 	fi
 
 	# untracked file but in the index
 	#
 	if [[ "$X$Y" == ' A' ]]; then
-		echo git add "${file@Q}"
-		echo git reset HEAD "${file@Q}"
+		echo git add "$file"
+		echo git reset HEAD "$file"
 		return
 	fi
 
 	# move back and forth to the index
 	#
 	if [[ "$X" =~ ^[MTAD]$ ]]; then
-		echo git reset HEAD "${file@Q}"
+		echo git reset HEAD "$file"
 	fi
 	if [[ "$Y" =~ ^[MTAD]$ ]]; then
-		echo git add "${file@Q}"
-		echo git checkout "${file@Q}"
+		echo git add "$file"
+		echo git checkout "$file"
 	fi
 }
 
