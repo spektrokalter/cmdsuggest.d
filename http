@@ -1,11 +1,11 @@
 #!/bin/bash
 
 extract_scheme() {
-	trurl --no-guess-scheme --verify --get '{scheme}' -- "$1" 2>/dev/null
+	trurl --no-guess-scheme --verify --get '{scheme}' -- "$1" 2>&1
 }
 
 extract_port() {
-	trurl --verify --get '{default:port}' -- "$1" 2>/dev/null
+	trurl --verify --get '{default:port}' -- "$1" 2>&1
 }
 
 read -r url
