@@ -1,14 +1,16 @@
 #!/bin/bash
 
+extract_host() {
+	trurl --verify --get '{host}' --url "$url" 2>/dev/null
+}
+
 read -r url
 
-if ! trurl --verify --url "$url" >/dev/null 2>&1; then
+if ! h="$(extract_host "$url")"; then
 	exit 1
 fi
 
-host="$(trurl --get '{host}' --url "$url")"
-
-case "$host" in
+case "$h" in
 *.youtube.com|youtube.com|youtu.be)
 	cat <<-EOF
 		mpv --no-video ${url@Q}
