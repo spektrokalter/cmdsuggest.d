@@ -2,12 +2,10 @@
 
 read -r str
 
-xstr="${str//[[:blank:]]/}"
-
-if ! [[
-	"$xstr" =~ ^[a-zA-Z0-9]{16}$ ||
-	"$xstr" =~ ^[a-zA-Z0-9]{26}$ ||
-	"$xstr" =~ ^[a-zA-Z0-9]{32}$
+if s="${str//[[:blank:]]/}"; ! [[
+	"$s" =~ ^[a-zA-Z0-9]{16}$ ||
+	"$s" =~ ^[a-zA-Z0-9]{26}$ ||
+	"$s" =~ ^[a-zA-Z0-9]{32}$
 ]]; then
 	exit 1
 fi
