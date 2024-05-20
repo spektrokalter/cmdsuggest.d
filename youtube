@@ -1,7 +1,7 @@
 #!/bin/bash
 
 extract_host() {
-	trurl --verify --get '{host}' --url "$url" 2>&1
+	trurl --verify --no-guess-scheme --get '{host}' --url "$url" 2>&1
 }
 
 read -r url
