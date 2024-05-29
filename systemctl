@@ -35,6 +35,27 @@ if (( ${#units[@]} == 0 )); then
 	exit 1
 fi
 
+for u in "${units[@]}"; do
+	case "$u" in
+	*.service \
+	| *.socket \
+	| *.device \
+	| *.mount \
+	| *.automount \
+	| *.swap \
+	| *.target \
+	| *.path \
+	| *.timer \
+	| *.slice \
+	| *.scope)
+		true
+		;;
+	*)
+		exit 1
+		;;
+	esac
+done
+
 if systemd-analyze verify -- "${units[@]}" >/dev/null 2>&1; then
 	print_suggestions 'systemctl' 'journalctl' "${units[@]}"
 fi
