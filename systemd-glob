@@ -25,13 +25,6 @@ list_machines() {
 	| jq --raw-output '.[].name'
 }
 
-list_funcs=(
-	list_system_units
-	list_user_units
-	list_system_unit_files
-	list_user_unit_files
-)
-
 read -r str
 
 case "$str" in
@@ -43,7 +36,7 @@ case "$str" in
 	;;
 esac
 
-for f in "${list_funcs[@]}"; do
+for f in list_system_units list_user_units list_system_unit_files list_user_unit_files; do
 	if [[ "$("$f" "$str" | head -1)" != "$str" ]]; then
 		"$f" "$str" \
 		| sed 's/^.*\(\.[a-z^.]*\)$/\1 &/' \
