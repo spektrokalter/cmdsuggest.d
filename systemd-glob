@@ -34,6 +34,15 @@ list_funcs=(
 
 read -r str
 
+case "$str" in
+*'?'* | *'*'* | *'['*)
+	true
+	;;
+*)
+	exit 1
+	;;
+esac
+
 for f in "${list_funcs[@]}"; do
 	if [[ "$("$f" "$str" | head -1)" != "$str" ]]; then
 		"$f" "$str" \
