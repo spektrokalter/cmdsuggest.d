@@ -13,9 +13,6 @@ process_entry() {
 	if [[ "$Y" =~ ^[MTAD]$ ]]; then
 		echo git diff -- "$file"
 	fi
-	if [[ "$X$Y" == '??' ]]; then
-		echo less -- "$file"
-	fi
 
 	# untracked file
 	#
