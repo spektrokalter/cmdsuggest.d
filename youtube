@@ -13,7 +13,8 @@ fi
 case "$h" in
 *.youtube.com|youtube.com|youtu.be)
 	cat <<-EOF
-		mpv --no-video ${url@Q}
+		mpv --vid=no ${url@Q}
+		systemd-run --user mpv --terminal=no --vid=no ${url@Q}
 	EOF
 	;;
 esac
