@@ -1,0 +1,16 @@
+#!/bin/bash
+
+while read -r word; do
+	if [[ -f "$word" ]]; then
+		printf 'e! %s\n' "$word"
+	fi
+done < <(
+	awk '
+		{
+			split($0, arr);
+			for (i = 1; i <= length(arr); i++) {
+				printf "%s\n", arr[i];
+			}
+		}
+	'
+)
