@@ -5,8 +5,6 @@ set -o errexit -o nounset -o pipefail
 process_entry() {
 	local X="$1" Y="$2" file="$3"
 
-	echo 'e!' "$file"
-
 	# diff
 	#
 	if [[ "$X" =~ ^[MTAD]$ ]]; then
